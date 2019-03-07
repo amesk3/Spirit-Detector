@@ -1,5 +1,5 @@
 {
-  "name": "boilermaker",
+  "name": "handDDR",
   "version": "1.0.0",
   "description": "Some boilerplate code to get you started - get shakin'!",
   "engines": {
@@ -48,6 +48,7 @@
     "passport-google-oauth": "^1.0.0",
     "pg": "^6.1.2",
     "pg-hstore": "^2.3.2",
+    "processing-js": "^1.6.6",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
@@ -57,7 +58,8 @@
     "redux-logger": "^2.8.1",
     "redux-thunk": "^2.3.0",
     "sequelize": "^4.38.0",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.1.1",
+    "video.js": "^7.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.55",
