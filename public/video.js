@@ -11,32 +11,16 @@
     navigator.mozGetUserMedia ||
     navigator.msGetUserMedia
 
-  navigator.getMedia(
-    {
-      video: true,
-      audio: false
-    },
-    function(stream) {
-      console.log('hitting this')
-      if (video.captureStream) {
-        video.captureStream = stream
-        video.srcObject = stream
-      } else {
-        video.src = (window.URL && window.URL.createObjectURL(stream)) || stream
+  var constraints = {audio: false, video: true}
+  navigator.mediaDevices
+    .getUserMedia(constraints)
+    .then(function(mediaStream) {
+      video.srcObject = mediaStream
+      video.onloadedmetadata = function(e) {
+        video.play()
       }
-      video.play()
-    },
-    function(error) {
-      console.log(error)
-    }
-  )
+    })
+    .catch(function(err) {
+      console.log(err.name + ':' + err.message)
+    })
 })()
-
-// function drawFrame() {
-//   var canvas = document.querySelector('canvas'),
-//     context = canvas.getContext('2d')
-
-//   context.drawImage(video, 0, 0, canvas.width, canvas.height)
-//   setTimeout(drawFrame, 50)
-// }
-// drawFrame()

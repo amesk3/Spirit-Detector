@@ -26,6 +26,12 @@ video {
   -moz-transform: rotateY(180deg); /* Firefox */
 }
 
+canvas {
+  transform: rotateY(180deg); /* mirror image transform*/
+  -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+  -moz-transform: rotateY(180deg); /* Firefox */
+}
+
 #overlay1 {
   position: absolute;
   top: 100px;
