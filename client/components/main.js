@@ -3,63 +3,72 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import store, {
-  collectCoin,
+//   collectCoin,
   setGameState,
-  setNumberCoins,
+  //   setNumberCoins,
   setCoins,
-  setEmotion,
-  setRounds,
-  decrementRound,
-  createInterval,
-  destroyInterval,
-  setOpponentScore,
-  blackoutScreen,
-  reviveScreen,
-  decreaseScore,
-  setUserScore
+  //   setEmotion,
+  setRounds
+  //   decrementRound,
+  //   createInterval,
+  //   destroyInterval,
+  //   setOpponentScore,
+  //   blackoutScreen,
+  //   reviveScreen,
+  //   decreaseScore,
+  //   setUserScore
 } from '../store'
 import VideoFeed from './videoFeed'
 
 class Main extends Component {
-  constructor() {
-    super()
-
+  constructor(props) {
+    super(props)
+    var video = document.getElementById('video')
     // this.pc = null;
     this.isInitiator = false
 
     this.state = {
       // pc: {},
-      userVidSource: '',
-      userMediaObject: {}
+      videoSource: video
+      // userMediaObject: {}
     }
 
     this.handleVideoSource = this.handleVideoSource.bind(this)
-    this.pickPositions = this.pickPositions.bind(this)
+    // this.pickPositions = this.pickPositions.bind(this)
     this.startGame = this.startGame.bind(this)
     this.runGame = this.runGame.bind(this)
   }
 
   componentDidMount() {
+    console.log('hitting component did mount')
     let videoSource
-    if (navigator.mediaDevices) {
-      navigator.mediaDevices
-        .getUserMedia({video: true, audio: true})
-        .then(this.handleVideoSource)
-        .catch(console.log)
-    }
+    navigator.getUserMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia ||
+      navigator.oGetUserMedia
 
-    window.addEventListener('keyup', this.handleSpacebar, false)
+    navigator.mediaDevices.getUserMedia(
+      {video: true, audio: true},
+      this.handleVideoSource,
+      this.videoError
+    )
   }
+
+  // window.addEventListener('keyup', this.handleSpacebar, false)
 
   handleVideoSource(mediaStream) {
     this.setState({
-      userVidSource: (video.srcObject = mediaStream),
+      videoSource: (video.srcObject = mediaStream),
       userMediaObject: mediaStream
     })
   }
 
+  videoError() {}
+
   startGame(rounds) {
-    this.props.setUserScore(0)
+    // this.props.setUserScore(0)
     // this.props.setOpponentScore(0);
     this.props.setGameState('active')
     this.props.setEmotion(this.selectRandomEmotion())
@@ -100,9 +109,14 @@ class Main extends Component {
   }
 
   render() {
+    console.log(this.props.match.coinPositions, ' this.props.coinpositions')
     return (
-      <div id="single-player">
-        <VideoFeed videoSource={this.state.userVidSource} />
+      <div>
+        <VideoFeed
+          videoSource={this.state.userVidSource}
+          coinPositions={this.coinPositions}
+        />
+        <video src={this.state.videoSource} autoPlay="true" />
       </div>
     )
   }
@@ -112,51 +126,52 @@ const mapStateToProps = state => {
   return {
     gameState: state.roundReducer.gameState,
     positions: state.roundReducer.coinPositions,
+    numberOfCoins: state.roundReducer.numberOfCoins,
     rounds: state.roundReducer.rounds
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    setNumberCoins: num => {
-      dispatch(setNumberCoins(num))
-    },
+    // setNumberCoins: num => {
+    //   dispatch(setNumberCoins(num))
+    // },
     setCoins: pos => {
       dispatch(setCoins(pos))
     },
-    setEmotion: emotion => {
-      dispatch(setEmotion(emotion))
-    },
+    // setEmotion: emotion => {
+    //   dispatch(setEmotion(emotion))
+    // },
     setRounds: rounds => {
       dispatch(setRounds(rounds))
     },
-    decrementRound: () => {
-      dispatch(decrementRound())
-    },
-    createInterval: interval => {
-      dispatch(createInterval(interval))
-    },
-    destroyInterval: () => {
-      dispatch(destroyInterval())
-    },
+    // decrementRound: () => {
+    //   dispatch(decrementRound())
+    // },
+    // createInterval: interval => {
+    //   dispatch(createInterval(interval))
+    // },
+    // destroyInterval: () => {
+    //   dispatch(destroyInterval())
+    // },
     setGameState: gameState => {
       dispatch(setGameState(gameState))
-    },
-    setOpponentScore: (user, score) => {
-      dispatch(setOpponentScore(score))
-    },
-    blackoutScreen: () => {
-      dispatch(blackoutScreen())
-    },
-    reviveScreen: () => {
-      dispatch(reviveScreen())
-    },
-    decreaseScore: num => {
-      dispatch(decreaseScore(num))
-    },
-    setUserScore: num => {
-      dispatch(setUserScore(num))
     }
+    // setOpponentScore: (user, score) => {
+    //   dispatch(setOpponentScore(score))
+    // },
+    // blackoutScreen: () => {
+    //   dispatch(blackoutScreen())
+    // },
+    // reviveScreen: () => {
+    //   dispatch(reviveScreen())
+    // },
+    // decreaseScore: num => {
+    //   dispatch(decreaseScore(num))
+    // },
+    // setUserScore: num => {
+    //   dispatch(setUserScore(num))
+    // }
   }
 }
 

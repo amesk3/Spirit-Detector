@@ -1,10 +1,25 @@
-/* eslint-disable complexity */
 import React from 'react'
 import {connect} from 'react-redux'
 // import getUserMedia from 'getusermedia'
 // import _ from 'lodash'
-
-var canvas = document.getElementById('image')
+import store, {
+//   collectCoin,
+  setGameState,
+  //   setNumberCoins,
+  setCoins,
+  //   setEmotion,
+  setRounds
+  //   decrementRound,
+  //   createInterval,
+  //   destroyInterval,
+  //   setOpponentScore,
+  //   blackoutScreen,
+  //   reviveScreen,
+  //   decreaseScore,
+  //   setUserScore
+} from '../store'
+import {fetchCart, checkoutThunk, updateUserThunk} from '../store/round'
+var canvas = document.getElementById('canvas')
 var cc = canvas.getContext('2d')
 
 const coinCoords = [
@@ -58,12 +73,13 @@ class VideoFeed extends React.Component {
 
     // this.PubSub = props.PubSub || PubSub
     this.blend = this.blend.bind(this)
-    this.lastImageData
+    // this.lastImageData
     this.checkAreas = this.checkAreas.bind(this)
     this.state = {}
   }
 
   componentDidMount() {
+    console.log('this.props.coinposition', this.props)
     this.blendedCtx = this.blended.getContext('2d')
     this.canvasCtx = this.canvas.getContext('2d')
     this.canvasCtx.translate(this.canvas.width, 0)
@@ -80,6 +96,7 @@ class VideoFeed extends React.Component {
   }
 
   blend() {
+    console.log('hitting blend')
     var width = this.canvas.width
     var height = this.canvas.height
     // get webcam image data
@@ -153,6 +170,18 @@ class VideoFeed extends React.Component {
     let className = this.props.matching ? 'matching' : 'notMatching'
     return (
       <div className="player-video">
+        <div>
+          {this.props.coinPositions.split('').map((position, index) => {
+            let coinStyles = {
+              position: 'absolute',
+              height: '32px',
+              width: '32px',
+              top: coinCoords[position].y,
+              left: coinCoords[position].x
+            }
+            return <img src="/images/coin.gif" style={coinStyles} key={index} />
+          })}
+        </div>
         <div className="vid-size">
           <video
             className="video-canvas"
@@ -172,7 +201,13 @@ class VideoFeed extends React.Component {
           className="blended"
           width="600px"
           height="480px"
-          ref={() => this.blend()}
+          ref={canvas => (this.blended = canvas)}
+        />
+        <canvas
+          className="canvas"
+          width="600px"
+          height="480px"
+          ref={canvas => (this.canvas = canvas)}
         />
       </div>
     )
@@ -182,12 +217,16 @@ class VideoFeed extends React.Component {
 const mapStateToProps = state => {
   return {
     gameState: state.roundReducer.gameState,
+    positions: state.roundReducer.coinPositions,
     matching: state.roundReducer.matching
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    setCoins: pos => {
+      dispatch(setCoins(pos))
+    },
     toggleCanvasClass: () => {
       dispatch(toggleCanvasClass())
     }

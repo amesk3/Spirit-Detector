@@ -3,33 +3,55 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width initial-scale=1.0'>
-    <title>video here</title>
+    <title>handDDR</title>
 
+
+  <img id='overlay1' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif' width='200' height='200'/>
+  <img id='overlay2' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif'width='200' height='200'/>
+  <img id='overlay3' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif'width='200' height='200'/>
+  <img id='overlay4' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif'width='200' height='200'/>
         <div class ='camera'>
-     <video width ='1800' height ='900' id="video" autoplay muted='muted'></video>
-    <canvas width ='400' height ='300'id='canvas'></canvas>
+     <video width ='1800' height ='900' id="video" autoplay muted='muted' ></video>
     
-  <img id='overlay1' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif'/>
-  <img id='overlay2' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif'/>
-  <img id='overlay3' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif'/>
-  <img id='overlay4' src='https://orig00.deviantart.net/cae9/f/2009/031/0/b/__ddr_arrow___by_inkjuse.gif'/>
+    <canvas width ='1800' height ='900' id = 'motion' ></canvas>
+    <canvas width ='1800' height ='900'id="canvas" class="canvas"></canvas>
+
+    <div id='newCanvas'>THIS IS A TEST</div>
+    <span id="score">?</span>
+    
+   <script src ='/client/component/videoFeed'>
     <link rel="stylesheet" href="/style.css" />
     <script defer src="/bundle.js"></script>
+
     <script src ='video.js'>Camera feed</script>
+    <script src = 'index.js'></script>
+
     <script src="//vjs.zencdn.net/ie8/1.1.1/videojs-ie8.min.js"></script>
-   <script async src=https://CDN.JSDelivr.net/processing.js/latest/mainfile></script>
+   <script async src='https://CDN.JSDelivr.net/processing.js/latest/mainfile'></script>
    
 
 
 
-<script language="javascript" src="creative_coding.js"></script>
+
 <script language="javascript" src="canvas.js"></script>
 <script language="javascript" src="video.js"></script>
-<script language="javascript" src="motion_detection.js"></script>
+
 <script language="javascript" src="quicksettings.min.js"></script>
+
+<script defer src="/bundle.js"></script>
   </head>
   <body>
     <div id="app"></div>
+    <script type="application/processing">
+            void setup(){
+                size(200, 200);
+            }
+
+            void draw(){
+                background(64);
+                ellipse(mouseX, mouseY, 20, 20);
+            }
+        </script>
   </body>
 </html>
 
