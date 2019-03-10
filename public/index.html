@@ -5,47 +5,33 @@
     <meta name='viewport' content='width=device-width initial-scale=1.0'>
     <title>handDDR</title>
 
+<button id="unmuteButton">UNMUTE</button>
+
+<script>
+  unmuteButton.addEventListener('click', function() {
+    video.muted = !true;
+  });
+</script>
         <div class ='camera'>
-     <video width ='1800' height ='900' id="video" autoplay muted='muted' ></video>
     
     <canvas width ='1800' height ='900' id = 'motion' ></canvas>
-    <canvas width ='1800' height ='900'id="canvas" class="canvas"></canvas>
 
-    <div id='newCanvas'>THIS IS A TEST</div>
+    <div id='newCanvas'></div>
     <span id="score">?</span>
-   <script src ='/client/component/videoFeed'>
+
     <link rel="stylesheet" href="/style.css" />
-    <script defer src="/bundle.js"></script>
-
-    <script src ='video.js'>Camera feed</script>
-    <script src = 'index.js'></script>
-
-    <script src="//vjs.zencdn.net/ie8/1.1.1/videojs-ie8.min.js"></script>
-   <script async src='https://CDN.JSDelivr.net/processing.js/latest/mainfile'></script>
+</br>
    
-
-
 
 
 <script language="javascript" src="canvas.js"></script>
 <script language="javascript" src="video.js"></script>
+<script language="javascript" src="index.js"></script>
 
-<script language="javascript" src="quicksettings.min.js"></script>
 
-<script defer src="/bundle.js"></script>
   </head>
   <body>
     <div id="app"></div>
-    <script type="application/processing">
-            void setup(){
-                size(200, 200);
-            }
-
-            void draw(){
-                background(64);
-                ellipse(mouseX, mouseY, 20, 20);
-            }
-        </script>
   </body>
 </html>
 

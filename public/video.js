@@ -10,6 +10,11 @@ var DiffCamEngine = (function() {
   var motionCanvas // receives processed diff images
   var motionContext // context for motion canvas
 
+  var soundContext
+  var bufferLoader
+  var setNoteReady
+  var notes = []
+
   var initSuccessCallback // called when init succeeds
   var initErrorCallback // called when init fails
   var startCompleteCallback // called when start is complete
@@ -27,7 +32,18 @@ var DiffCamEngine = (function() {
   var includeMotionBox // flag to calculate and draw motion bounding box
   var includeMotionPixels // flag to create object denoting pixels with motion
 
+  //for google chrome, unmute button added
+  window.onload = function() {
+    document.querySelector('button').addEventListener('click', function() {
+      soundContext.resume().then(() => {
+        console.log('Playback resumed successfully')
+      })
+    })
+  }
+  const audio = new Audio('/sounds/note2.mp3')
+
   function init(options) {
+    console.log('INIT?')
     // sanity check
     if (!options) {
       throw 'No options object provided'
@@ -77,11 +93,12 @@ var DiffCamEngine = (function() {
     motionContext = motionCanvas.getContext('2d')
 
     requestWebcam()
+    initialize()
   }
 
   function requestWebcam() {
     var constraints = {
-      audio: false,
+      audio: true,
       video: {width: captureWidth, height: captureHeight}
     }
 
@@ -266,6 +283,152 @@ var DiffCamEngine = (function() {
 
   function setScoreThreshold(val) {
     scoreThreshold = val
+  }
+
+  const coinCoords = [{x: 0, y: 0}]
+
+  function initialize() {
+    if (!AudioContext) {
+      alert('AudioContext not supported!')
+    } else {
+      loadSounds()
+      checkAreas()
+    }
+  }
+
+  function BufferLoader(context, urlList, callback) {
+    this.context = context
+    this.urlList = urlList
+    this.onload = callback
+    this.bufferList = new Array()
+    this.loadCount = 0
+  }
+
+  BufferLoader.prototype.loadBuffer = function(url, index) {
+    // Load buffer asynchronously
+    var request = new XMLHttpRequest()
+    request.open('GET', url, true)
+    request.responseType = 'arraybuffer'
+
+    var loader = this
+
+    request.onload = function() {
+      // Asynchronously decode the audio file data in request.response
+      loader.context.decodeAudioData(
+        request.response,
+        function(buffer) {
+          if (!buffer) {
+            alert('error decoding file data: ' + url)
+            return
+          }
+          loader.bufferList[index] = buffer
+          if (++loader.loadCount == loader.urlList.length)
+            loader.onload(loader.bufferList)
+        },
+        function(error) {
+          console.error('decodeAudioData error', error)
+        }
+      )
+    }
+
+    request.onerror = function() {
+      alert('BufferLoader: XHR error')
+    }
+
+    request.send()
+  }
+
+  BufferLoader.prototype.load = function() {
+    for (var i = 0; i < this.urlList.length; ++i)
+      this.loadBuffer(this.urlList[i], i)
+  }
+
+  function loadSounds() {
+    console.log('hit loadsounds')
+
+    soundContext = new AudioContext()
+
+    bufferLoader = new BufferLoader(
+      soundContext,
+      [
+        'sounds/note1.mp3',
+        'sounds/note2.mp3',
+        'sounds/note3.mp3',
+        'sounds/note4.mp3',
+        'sounds/note5.mp3',
+        'sounds/note6.mp3',
+        'sounds/note7.mp3',
+        'sounds/note8.mp3'
+      ],
+      finishedLoading
+    )
+    bufferLoader.load()
+  }
+
+  function finishedLoading(bufferList) {
+    for (var i = 0; i < 8; i++) {
+      var source = soundContext.createBufferSource()
+      source.buffer = bufferList[i]
+      source.connect(soundContext.destination)
+      var note = {
+        note: source,
+        ready: true
+      }
+      notes.push(note)
+      console.log('updated NOTES', typeof notes, notes.length)
+    }
+
+    start()
+  }
+  console.log('are NOTES IN HERE', window.notes)
+
+  function checkAreas() {
+    console.log('checkareas check')
+
+    for (let r = 0; r < 8; ++r) {
+      let motionData = motionContext.getImageData(0, 0, 100, 100)
+      console.log(motionData, 'this is motionContext')
+      let i = 0
+      let average = 0
+      //loop over pixels
+      while (i < motionData.data.length * 0.25) {
+        //make an average between the color channel
+        average +=
+          (motionData.data[i * 4] +
+            motionData.data[i * 4 + 1] +
+            motionData.data[i * 4 * 2]) /
+          3
+        ++i
+      }
+      //calculate an average between of the color values of the note area
+      average = Math.round(average / (motionData.data.length * 0.25))
+      //over a small limit, consider that a movement is detected
+      //play a note and show a visual feedback to the user
+
+      console.log('notesR', notes)
+      // playSound()
+      audio.pause()
+      audio.currentTime = 0
+      audio.play()
+      // if (!notes[r].visual.is(':animated')) {
+      //   notes[r].visual.css({opacity: 1})
+      //   notes[r].visual.animate({opacity: 0}, 700)
+      // }
+    }
+  }
+
+  function playSound(obj) {
+    console.log('playing sounds check', obj, 'obj')
+    // if (!obj.ready) return
+    var source = soundContext.createBufferSource()
+    // console.log('note', note, 'OBJ', obj.note)
+    console.log('source.buffer', source.buffer)
+    source.buffer = obj.note.buffer
+    source.connect(soundContext.destination)
+    source.start(0)
+    obj.ready = false
+    // throttle the note
+    setTimeout(setNoteReady, 400, obj)
   }
 
   return {
