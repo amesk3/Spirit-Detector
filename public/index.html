@@ -5,26 +5,23 @@
     <meta name='viewport' content='width=device-width initial-scale=1.0'>
     <title>handDDR</title>
 
-<button id="unmuteButton">UNMUTE</button>
 
-<script>
-  unmuteButton.addEventListener('click', function() {
-    video.muted = !true;
-  });
-</script>
+
         <div class ='camera'>
-    
-    <canvas width ='1800' height ='900' id = 'motion' ></canvas>
 
-    <div id='newCanvas'></div>
+    <canvas width ='800' height ='600' id = 'motion' ></canvas>
+
+    <div style="width:800px; height: 600px;" id='newCanvas'></div>
     <span id="score">?</span>
 
+   
     <link rel="stylesheet" href="/style.css" />
 </br>
-   
+      
+    <div  id='canvas-source'></div>
+    <div id='canvas-blended'></div>
 
-
-<script language="javascript" src="canvas.js"></script>
+<video width="800" height="600" autoplay>
 <script language="javascript" src="video.js"></script>
 <script language="javascript" src="index.js"></script>
 
