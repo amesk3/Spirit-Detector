@@ -176,8 +176,8 @@ var DiffCamEngine = (function() {
 
   function update() {
     drawVideo()
-    blend()
-    checkAreas()
+    // blend()
+    // checkAreas()
     // requestAnimFrame(update);
     //		timeOut = setTimeout(update, 1000/60);
   }
@@ -283,6 +283,10 @@ var DiffCamEngine = (function() {
       }
     }
 
+    if (score > 3000) {
+      audio.play()
+    }
+
     return {
       score: score,
       motionBox: score > scoreThreshold ? motionBox : undefined,
@@ -350,7 +354,7 @@ var DiffCamEngine = (function() {
       alert('AudioContext not supported!')
     } else {
       loadSounds()
-      checkAreas()
+      // checkAreas()
     }
   }
 
@@ -439,126 +443,126 @@ var DiffCamEngine = (function() {
     start()
   }
 
-  function blend() {
-    var width = canvasSource.width
-    var height = canvasSource.height
-    // get webcam image data
-    var sourceData = contextSource.getImageData(0, 0, width, height)
-    // create an image if the previous image doesn’t exist
-    if (!lastImageData)
-      lastImageData = contextSource.getImageData(0, 0, width, height)
-    // create a ImageData instance to receive the blended result
-    var blendedData = contextSource.createImageData(width, height)
-    // blend the 2 images
-    differenceAccuracy(blendedData.data, sourceData.data, lastImageData.data)
-    // draw the result in a canvas
-    contextBlended.putImageData(blendedData, 0, 0)
-    console.log('contextblended', contextBlended)
-    // store the current webcam image
-    lastImageData = sourceData
-  }
+  // function blend() {
+  //   var width = canvasSource.width
+  //   var height = canvasSource.height
+  //   // get webcam image data
+  //   var sourceData = contextSource.getImageData(0, 0, width, height)
+  //   // create an image if the previous image doesn’t exist
+  //   if (!lastImageData)
+  //     lastImageData = contextSource.getImageData(0, 0, width, height)
+  //   // create a ImageData instance to receive the blended result
+  //   var blendedData = contextSource.createImageData(width, height)
+  //   // blend the 2 images
+  //   differenceAccuracy(blendedData.data, sourceData.data, lastImageData.data)
+  //   // draw the result in a canvas
+  //   contextBlended.putImageData(blendedData, 0, 0)
+  //   console.log('contextblended', contextBlended)
+  //   // store the current webcam image
+  //   lastImageData = sourceData
+  // }
 
-  function threshold(value) {
-    return value > 0x15 ? 0xff : 0
-  }
+  // function threshold(value) {
+  //   return value > 0x15 ? 0xff : 0
+  // }
 
-  function fastAbs(value) {
-    return (value ^ (value >> 31)) - (value >> 31)
-  }
+  // function fastAbs(value) {
+  //   return (value ^ (value >> 31)) - (value >> 31)
+  // }
 
-  function differenceAccuracy(target, data1, data2) {
-    if (data1.length != data2.length) return null
-    var i = 0
-    while (i < data1.length * 0.25) {
-      var average1 = (data1[4 * i] + data1[4 * i + 1] + data1[4 * i + 2]) / 3
-      var average2 = (data2[4 * i] + data2[4 * i + 1] + data2[4 * i + 2]) / 3
-      var diff = threshold(fastAbs(average1 - average2))
-      target[4 * i] = diff
-      target[4 * i + 1] = diff
-      target[4 * i + 2] = diff
-      target[4 * i + 3] = 0xff
-      ++i
-    }
-  }
-
-  // function checkAreas() {
-  //   console.log('checkareas check')
-
-  //   // let motionData = motionContext.getImageData(0, 0, 32, 32)
-  //   var blendedData = contextBlended.getImageData(0, 0, 100, 100)
-  //   // let diffData = diffContext.getImageData(0, 0, 32, 32)
-  //   console.log('diffdata', diffData)
-
-  //   let i = 0
-  //   let average = 0
-  //   //loop over pixels
-  //   while (i < diffData.data.length * 0.25) {
-  //     //make an average between the color channel
-  //     average +=
-  //       (diffData.data[i * 4] +
-  //         diffData.data[i * 4 + 1] +
-  //         diffData.data[i * 4 * 2]) /
-  //       3
-  //     console.log('average', average)
+  // function differenceAccuracy(target, data1, data2) {
+  //   if (data1.length != data2.length) return null
+  //   var i = 0
+  //   while (i < data1.length * 0.25) {
+  //     var average1 = (data1[4 * i] + data1[4 * i + 1] + data1[4 * i + 2]) / 3
+  //     var average2 = (data2[4 * i] + data2[4 * i + 1] + data2[4 * i + 2]) / 3
+  //     var diff = threshold(fastAbs(average1 - average2))
+  //     target[4 * i] = diff
+  //     target[4 * i + 1] = diff
+  //     target[4 * i + 2] = diff
+  //     target[4 * i + 3] = 0xff
   //     ++i
   //   }
-  //   //calculate an average between of the color values of the note area
-  //   average = Math.round(average / (diffData.data.length * 0.25))
-  //   //over a small limit, consider that a movement is detected
-  //   //play a note and show a visual feedback to the user
-  //   if (average > 10) {
-  //     // console.log('notesR', notes)
-  //     // playSound()
-  //     audio.pause()
-  //     audio.currentTime = 0
-  //     audio.play()
-  //     // }
-  //     // playSound()
-  //     // if (!notes[r].visual.is(':animated')) {
-  //     //   notes[r].visual.css({opacity: 1})
-  //     //   notes[r].visual.animate({opacity: 0}, 700)
+  // }
+
+  // // function checkAreas() {
+  // //   console.log('checkareas check')
+
+  // //   // let motionData = motionContext.getImageData(0, 0, 32, 32)
+  // //   var blendedData = contextBlended.getImageData(0, 0, 100, 100)
+  // //   // let diffData = diffContext.getImageData(0, 0, 32, 32)
+  // //   console.log('diffdata', diffData)
+
+  // //   let i = 0
+  // //   let average = 0
+  // //   //loop over pixels
+  // //   while (i < diffData.data.length * 0.25) {
+  // //     //make an average between the color channel
+  // //     average +=
+  // //       (diffData.data[i * 4] +
+  // //         diffData.data[i * 4 + 1] +
+  // //         diffData.data[i * 4 * 2]) /
+  // //       3
+  // //     console.log('average', average)
+  // //     ++i
+  // //   }
+  // //   //calculate an average between of the color values of the note area
+  // //   average = Math.round(average / (diffData.data.length * 0.25))
+  // //   //over a small limit, consider that a movement is detected
+  // //   //play a note and show a visual feedback to the user
+  // //   if (average > 10) {
+  // //     // console.log('notesR', notes)
+  // //     // playSound()
+  // //     audio.pause()
+  // //     audio.currentTime = 0
+  // //     audio.play()
+  // //     // }
+  // //     // playSound()
+  // //     // if (!notes[r].visual.is(':animated')) {
+  // //     //   notes[r].visual.css({opacity: 1})
+  // //     //   notes[r].visual.animate({opacity: 0}, 700)
+  // //   }
+  // // }
+  // function checkAreas() {
+  //   // loop over the note areas
+  //   for (var r = 0; r < 8; ++r) {
+  //     // console.log('motionContext bottom', motionContext)
+  //     // console.log(video.width, 'vid')
+  //     var blendedData = diffContext.getImageData(
+  //       // console.log('blendeddata', blendedData)
+  //       1 / 8 * r * video.width,
+  //       0,
+  //       video.width / 8,
+  //       100
+  //     )
+  //     // console.log('blendeddata', blendedData)
+  //     var i = 0
+  //     var average = 0
+  //     // loop over the pixels
+  //     while (i < blendedData.data.length * 0.25) {
+  //       // console.log('hitting while')
+  //       // make an average between the color channel
+  //       average +=
+  //         (blendedData.data[i * 4] +
+  //           blendedData.data[i * 4 + 1] +
+  //           blendedData.data[i * 4 + 2]) /
+  //         3
+  //       ++i
+  //       console.log('average', average)
+  //     }
+  //     // calculate an average between of the color values of the note area
+  //     average = Math.round(average / (blendedData.data.length * 0.25))
+  //     if (average > 10) {
+  //       console.log('above avg')
+  //       // over a small limit, consider that a movement is detected
+  //       // play a note and show a visual feedback to the user
+  //       console.log(notes, ' notes')
+  //       playSound(notes[r])
+  //       //				notes[r].visual.show();
+  //       //				notes[r].visual.fadeOut();
+  //     }
   //   }
   // }
-  function checkAreas() {
-    // loop over the note areas
-    for (var r = 0; r < 8; ++r) {
-      // console.log('motionContext bottom', motionContext)
-      // console.log(video.width, 'vid')
-      var blendedData = diffContext.getImageData(
-        // console.log('blendeddata', blendedData)
-        1 / 8 * r * video.width,
-        0,
-        video.width / 8,
-        100
-      )
-      // console.log('blendeddata', blendedData)
-      var i = 0
-      var average = 0
-      // loop over the pixels
-      while (i < blendedData.data.length * 0.25) {
-        // console.log('hitting while')
-        // make an average between the color channel
-        average +=
-          (blendedData.data[i * 4] +
-            blendedData.data[i * 4 + 1] +
-            blendedData.data[i * 4 + 2]) /
-          3
-        ++i
-        console.log('average', average)
-      }
-      // calculate an average between of the color values of the note area
-      average = Math.round(average / (blendedData.data.length * 0.25))
-      if (average > 10) {
-        console.log('above avg')
-        // over a small limit, consider that a movement is detected
-        // play a note and show a visual feedback to the user
-        console.log(notes, ' notes')
-        playSound(notes[r])
-        //				notes[r].visual.show();
-        //				notes[r].visual.fadeOut();
-      }
-    }
-  }
 
   function playSound(obj) {
     console.log('playing sounds check', obj, 'obj')
