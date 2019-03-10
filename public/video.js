@@ -183,7 +183,7 @@ var DiffCamEngine = (function() {
   }
 
   function drawVideo() {
-    console.log('ddrawing video')
+    console.log('drawing video', video.width, video.height)
     contextSource.drawImage(video, 0, 0, video.width, video.height)
   }
 
