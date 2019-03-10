@@ -105,6 +105,40 @@ var DiffCamEngine = (function() {
     initialize()
   }
 
+  var webcamError = function(e) {
+    alert('Webcam error!', e)
+  }
+
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({video: true}).then(function(stream) {
+      video.srcObject = stream
+      initialize()
+    }, webcamError)
+  } else if (navigator.getUserMedia) {
+    navigator.getUserMedia(
+      {video: true},
+      function(stream) {
+        video.srcObject = stream
+        initialize()
+      },
+      webcamError
+    )
+  } else if (navigator.webkitGetUserMedia) {
+    navigator.webkitGetUserMedia(
+      {video: true},
+      function(stream) {
+        video.srcObject = window.webkitURL.createObjectURL(stream)
+        initialize()
+      },
+      webcamError
+    )
+  } else {
+    //video.src = 'somevideo.webm'; // fallback.
+  }
+  // mirror video
+  contextSource.translate(canvasSource.width, 0)
+  contextSource.scale(-1, 1)
+
   function requestWebcam() {
     var constraints = {
       audio: true,
@@ -149,6 +183,7 @@ var DiffCamEngine = (function() {
   }
 
   function drawVideo() {
+    console.log('ddrawing video')
     contextSource.drawImage(video, 0, 0, video.width, video.height)
   }
 
@@ -417,7 +452,8 @@ var DiffCamEngine = (function() {
     // blend the 2 images
     differenceAccuracy(blendedData.data, sourceData.data, lastImageData.data)
     // draw the result in a canvas
-    motionContext.putImageData(blendedData, 0, 0)
+    contextBlended.putImageData(blendedData, 0, 0)
+    console.log('contextblended', contextBlended)
     // store the current webcam image
     lastImageData = sourceData
   }
@@ -488,7 +524,7 @@ var DiffCamEngine = (function() {
     for (var r = 0; r < 8; ++r) {
       // console.log('motionContext bottom', motionContext)
       // console.log(video.width, 'vid')
-      var blendedData = motionContext.getImageData(
+      var blendedData = diffContext.getImageData(
         // console.log('blendeddata', blendedData)
         1 / 8 * r * video.width,
         0,
